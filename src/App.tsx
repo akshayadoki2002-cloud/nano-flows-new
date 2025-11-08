@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import { ThemeProvider } from './context/ThemeContext';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -10,18 +11,21 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import AIChat from './components/AIChat';
 import SocialMediaBar from './components/SocialMediaBar';
-import EducationDashboard from './components/EducationDashboard';// ✅ Added new page import
+import EducationDashboard from './components/EducationDashboard';
+import { PageTransition } from './components/animations';
 
 function App() {
   return (
     <ThemeProvider>
       <Router>
-        <Routes>
+        <AnimatePresence mode="wait">
+          <Routes>
           {/* ✅ Main Home Page Route */}
           <Route
             path="/"
             element={
-              <div className="relative min-h-screen flex flex-col bg-white dark:bg-dark-bg transition-colors duration-300">
+              <PageTransition>
+                <div className="relative min-h-screen flex flex-col bg-white dark:bg-dark-bg transition-colors duration-300">
                 <Header />
                 <SocialMediaBar />
                 <Hero />
@@ -32,7 +36,8 @@ function App() {
                 <Contact />
                 <Footer />
                 <AIChat />
-              </div>
+                </div>
+              </PageTransition>
             }
           />
 
@@ -40,12 +45,15 @@ function App() {
           <Route
             path="/educationdashboard"
             element={
-              <div className="relative min-h-screen flex flex-col bg-white dark:bg-dark-bg transition-colors duration-300">
-                <EducationDashboard />
-              </div>
+              <PageTransition>
+                <div className="relative min-h-screen flex flex-col bg-white dark:bg-dark-bg transition-colors duration-300">
+                  <EducationDashboard />
+                </div>
+              </PageTransition>
             }
           />
-        </Routes>
+          </Routes>
+        </AnimatePresence>
       </Router>
     </ThemeProvider>
   );

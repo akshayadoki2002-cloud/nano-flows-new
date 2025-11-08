@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { X, Send, Bot } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
+import { AIThinkingAnimation, AIPulseButton } from './animations';
 
 const AIChat = () => {
   const { theme } = useTheme();
@@ -67,29 +69,42 @@ const AIChat = () => {
 
   return (
     <>
-      <button
-        onClick={() => setIsOpen(true)}
-        className={`fixed bottom-6 right-6 sm:bottom-8 sm:right-8 w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center z-50 transition-all duration-300 hover:scale-110 animate-pulse-slow focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-          theme === 'dark'
-            ? 'bg-electric-blue text-black glow-blue focus:ring-electric-blue'
-            : 'bg-accent-red text-white glow-red focus:ring-accent-red'
-        } ${isOpen ? 'hidden' : 'flex'}`}
-        aria-label="Open AI chat assistant"
-      >
-        <Bot size={28} strokeWidth={1.5} aria-hidden="true" />
-      </button>
+      <AnimatePresence>
+        {!isOpen && (
+          <motion.button
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            onClick={() => setIsOpen(true)}
+            className={`fixed bottom-6 right-6 sm:bottom-8 sm:right-8 w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center z-50 transition-all duration-300 hover:scale-110 animate-pulse-slow focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+              theme === 'dark'
+                ? 'bg-electric-blue text-black glow-blue focus:ring-electric-blue'
+                : 'bg-accent-red text-white glow-red focus:ring-accent-red'
+            }`}
+            aria-label="Open AI chat assistant"
+          >
+            <Bot size={28} strokeWidth={1.5} aria-hidden="true" />
+          </motion.button>
+        )}
+      </AnimatePresence>
 
-      {isOpen && (
-        <div
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.8, opacity: 0, y: 20 }}
+            transition={{ duration: 0.3 }}
           className={`fixed bottom-6 left-1/2 -translate-x-1/2 md:left-auto md:right-6 md:translate-x-0 sm:bottom-8 sm:right-8 w-[calc(100%-2rem)] sm:w-[90%] max-w-md h-[500px] sm:h-[600px] rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden transition-all duration-300 ${
             theme === 'dark'
               ? 'bg-dark-card border-2 border-electric-blue glow-blue'
               : 'bg-white border-2 border-accent-red glow-red'
           }`}
-          role="dialog"
-          aria-labelledby="chat-title"
-          aria-modal="true"
-        >
+            role="dialog"
+            aria-labelledby="chat-title"
+            aria-modal="true"
+          >
           <div
             className={`flex items-center justify-between p-4 border-b ${
               theme === 'dark'
@@ -173,7 +188,11 @@ const AIChat = () => {
               </div>
             ))}
             {isTyping && (
-              <div className="flex justify-start">
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex justify-start"
+              >
                 <div
                   className={`max-w-[80%] rounded-2xl px-4 py-3 font-exo text-sm sm:text-base ${
                     theme === 'dark'
@@ -181,13 +200,9 @@ const AIChat = () => {
                       : 'bg-white text-black border border-gray-200 shadow-md'
                   }`}
                 >
-                  <div className="flex space-x-2">
-                    <div className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <div className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <div className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                  </div>
+                  <AIThinkingAnimation size="md" />
                 </div>
-              </div>
+              </motion.div>
             )}
             <div ref={messagesEndRef} />
           </div>
@@ -214,18 +229,14 @@ const AIChat = () => {
                 }`}
                 aria-label="Chat message input"
               />
-              <button
+              <AIPulseButton
                 onClick={handleSend}
                 disabled={!inputValue.trim()}
-                className={`px-4 py-3 rounded-lg transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed ${
-                  theme === 'dark'
-                    ? 'bg-electric-green text-black hover:glow-green focus:ring-electric-green'
-                    : 'bg-accent-red text-white hover:glow-red focus:ring-accent-red'
-                }`}
-                aria-label="Send message"
+                variant="secondary"
+                className="px-4 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Send size={20} />
-              </button>
+              </AIPulseButton>
             </div>
 
             <div className="mt-3 flex flex-wrap gap-2">
@@ -245,8 +256,9 @@ const AIChat = () => {
               ))}
             </div>
           </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };

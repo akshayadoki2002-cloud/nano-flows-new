@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import { ArrowRight, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
+import { AIGlowBackground, AIPulseButton } from './animations';
 
 const slideOneImageUrl = '/nanoflows-image.png';
 
@@ -176,6 +178,7 @@ const Hero = () => {
       }`}
     >
       <canvas ref={canvasRef} className="particle-bg" aria-hidden="true" />
+      <AIGlowBackground />
 
       <div
         className={`absolute inset-0 ${
@@ -185,7 +188,12 @@ const Hero = () => {
       />
 
       <div className="container mx-auto px-4 sm:px-6 py-20 sm:py-24 md:py-32 relative z-10 max-w-6xl text-center">
-        <div className="mb-6 inline-flex items-center space-x-2 px-4 py-2 rounded-full border animate-pulse-slow justify-center">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mb-6 inline-flex items-center space-x-2 px-4 py-2 rounded-full border animate-pulse-slow justify-center"
+        >
           <Sparkles
             size={20}
             className={theme === 'dark' ? 'text-electric-green' : 'text-accent-red'}
@@ -198,7 +206,7 @@ const Hero = () => {
           >
             AI-Powered Innovation Platform
           </span>
-        </div>
+        </motion.div>
 
         {currentSlide === 0 ? (
           slideAnimationStage === 'show' ? (
@@ -296,15 +304,17 @@ const Hero = () => {
           </div>
         )}
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 px-4">
-          <button
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 px-4"
+        >
+          <AIPulseButton
             onClick={handleButtonClick}
-            className={`group w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 rounded-full font-exo font-semibold text-base sm:text-lg transition-all duration-300 flex items-center justify-center space-x-2 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-              theme === 'dark'
-                ? 'bg-electric-green text-black hover:glow-green focus:ring-electric-green'
-                : 'bg-accent-red text-white hover:glow-red focus:ring-accent-red'
-            }`}
-            aria-label={slides[currentSlide].buttonText}
+            variant="secondary"
+            size="lg"
+            className="w-full sm:w-auto group flex items-center justify-center space-x-2"
           >
             <span>{slides[currentSlide].buttonText}</span>
             <ArrowRight
@@ -312,19 +322,16 @@ const Hero = () => {
               className="group-hover:translate-x-1 transition-transform duration-300"
               aria-hidden="true"
             />
-          </button>
+          </AIPulseButton>
 
-          <button
-            className={`w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 rounded-full font-exo font-semibold text-base sm:text-lg border-2 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-              theme === 'dark'
-                ? 'border-electric-blue text-electric-blue hover:bg-electric-blue hover:text-black focus:ring-electric-blue'
-                : 'border-accent-blue text-accent-blue hover:bg-accent-blue hover:text-white focus:ring-accent-blue'
-            }`}
-            aria-label="Explore our solutions"
+          <AIPulseButton
+            variant="outline"
+            size="lg"
+            className="w-full sm:w-auto"
           >
             Explore Solutions
-          </button>
-        </div>
+          </AIPulseButton>
+        </motion.div>
 
         <div className="flex justify-center space-x-3 sm:space-x-4 mt-8 px-4" role="tablist" aria-label="Slide navigation">
           {slides.map((_, index) => (
