@@ -21,7 +21,7 @@ const services = [
     icon: Brain,
     title: 'AI & Machine Learning',
     description:
-      'Deploy advanced AI solutions for automation, predictive analytics, and natural language systems. Unlock smarter business outcomes and scalable innovation across any industry.',
+      'Deploy advanced AI solutions for automation, predictive analytics, and natural language systems. Unlock smarter business outcomes and a professional scalable innovation across any industry.',
     popupContent:
       'Nano Flows AI delivers innovative machine learning and artificial intelligence systems that power automation, predictive insights, and advanced language understanding for leading industries worldwide.',
     features: ['Neural Networks', 'Deep Learning', 'Predictive Models', 'NLP Solutions'],
@@ -69,7 +69,7 @@ const services = [
     icon: Database,
     title: 'Data Analytics',
     description:
-      'Visualize and interpret your data with tailored analytics platforms and predictive dashboards. Empower decisions with actionable insights and measurable business intelligence.',
+      'Visualize and interpret your data with the tailored analytics platforms and predictive dashboards. Empower the decisions with actionable insights and measurable business intelligence.',
     popupContent:
       'Nano Flows AI builds end-to-end analytics ecosystems that process, visualize, and interpret data effectively, helping organizations act confidently on real-time business intelligence.',
     features: ['Big Data Processing', 'Data Visualization', 'BI Dashboards', 'Predictive Analytics'],
@@ -117,7 +117,7 @@ const services = [
     icon: Youtube,
     title: 'YouTube Promotions',
     description:
-      'Grow your audience with full YouTube channel setup, video SEO, strategic campaigns, and advanced analytics. Maximize your brand’s reach and channel performance for sustained digital growth.',
+      'Grow your audience with full YouTube channel setup, video SEO, strategic campaigns, and advanced analytics. Maximize your brand’s reach and channel performance for sustained digital growth and long-term business success.',
     popupContent:
       'Nano Flows AI grows your digital influence through strategic YouTube channel management, intelligent SEO integration, audience targeting, and data-driven content analytics.',
     features: ['Channel Setup & Branding', 'Video SEO Optimization', 'Audience Targeting', 'Performance Tracking'],
@@ -149,7 +149,7 @@ const services = [
     icon: TrendingUp,
     title: 'Digital & SEO Marketing',
     description:
-      'Boost visibility and search rankings through expert SEO, in-depth keyword research, local targeting, and technical optimization. Drive measurable web traffic and results with precision.',
+      'Boost visibility and search rankings through expert SEO, in-depth keyword research, local targeting, and technical optimization. Drive measurable web traffic and results with precision to accelerate online business growth.',
     popupContent:
       'Nano Flows AI improves search results through data-backed SEO processes, keyword strategies, and technical enhancements that elevate visibility and maximize online traffic.',
     features: ['On-Page SEO', 'Keyword Research', 'Local SEO', 'Technical Optimization'],
@@ -165,7 +165,7 @@ const services = [
     icon: BookOpen,
     title: 'AI Consulting & Training',
     description:
-      'Plan, train, and launch AI adoption with tailored consulting and workforce upskilling for future-ready intelligent enterprises. Enable scalable automation and sustainable innovation.',
+      'Plan, train, and launch AI adoption with tailored consulting and workforce upskilling for future-ready intelligent enterprises. Enable scalable automation and sustainable innovation for long-term competitive business advantage.',
     popupContent:
       'Nano Flows AI empowers organizations with AI-focused consulting, comprehensive training programs, and digital transformation guidance designed for the future of work.',
     features: ['AI Readiness Assessment', 'AI Integration Strategy', 'Corporate AI Training', 'Process Automation Guidance'],
