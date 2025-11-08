@@ -12,6 +12,7 @@ import Footer from './components/Footer';
 import AIChat from './components/AIChat';
 import SocialMediaBar from './components/SocialMediaBar';
 import EducationDashboard from './components/EducationDashboard';
+import AIToolsShowcase from './components/AIToolsShowcase';
 import { PageTransition } from './components/animations';
 
 function AnimatedRoutes() {
@@ -48,6 +49,18 @@ function AnimatedRoutes() {
               <PageTransition>
                 <div className="relative min-h-screen flex flex-col bg-white dark:bg-dark-bg transition-colors duration-300">
                   <EducationDashboard />
+                </div>
+              </PageTransition>
+            }
+          />
+
+          {/* ✅ AI Tools Showcase Route */}
+          <Route
+            path="/ai-tools"
+            element={
+              <PageTransition>
+                <div className="relative min-h-screen flex flex-col bg-white dark:bg-dark-bg transition-colors duration-300">
+                  <AIToolsShowcase />
                 </div>
               </PageTransition>
             }

@@ -155,6 +155,8 @@ const Hero = () => {
   const handleButtonClick = () => {
     if (currentSlide === 1) {
       navigate('/educationdashboard');
+    } else if (currentSlide === 2) {
+      navigate('/ai-tools');
     } else {
       console.log(`Clicked ${slides[currentSlide].buttonText}`);
     }
