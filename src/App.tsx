@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { ThemeProvider } from './context/ThemeContext';
 import Header from './components/Header';
@@ -14,12 +14,12 @@ import SocialMediaBar from './components/SocialMediaBar';
 import EducationDashboard from './components/EducationDashboard';
 import { PageTransition } from './components/animations';
 
-function App() {
+function AnimatedRoutes() {
+  const location = useLocation();
+
   return (
-    <ThemeProvider>
-      <Router>
-        <AnimatePresence mode="wait">
-          <Routes>
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
           {/* ✅ Main Home Page Route */}
           <Route
             path="/"
@@ -52,8 +52,16 @@ function App() {
               </PageTransition>
             }
           />
-          </Routes>
-        </AnimatePresence>
+      </Routes>
+    </AnimatePresence>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <Router>
+        <AnimatedRoutes />
       </Router>
     </ThemeProvider>
   );
