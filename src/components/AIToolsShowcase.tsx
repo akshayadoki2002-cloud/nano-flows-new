@@ -39,6 +39,7 @@ const AIToolsShowcase = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const categories = [
     { id: 'all', label: 'All Tools', icon: Sparkles },
@@ -181,7 +182,13 @@ const AIToolsShowcase = () => {
       <div className={`border-b ${theme === 'dark' ? 'bg-dark-card border-gray-800' : 'bg-white border-gray-200'}`}>
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+            <h1 className={`text-2xl font-bold font-orbitron ${
+              theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
+            }`}>
+              Nano Flows AI Tools
+            </h1>
+
+            <div className="flex items-center gap-3">
               <button
                 onClick={() => navigate('/')}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all ${
@@ -194,24 +201,18 @@ const AIToolsShowcase = () => {
                 Back
               </button>
               
-              <h1 className={`text-2xl font-bold font-orbitron ${
-                theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
-              }`}>
-                Nano Flows AI Tools
-              </h1>
+              <button
+                onClick={toggleTheme}
+                className={`p-2 rounded-lg transition-all ${
+                  theme === 'dark'
+                    ? 'bg-dark-lighter hover:bg-gray-700 text-electric-blue'
+                    : 'bg-gray-100 hover:bg-gray-200 text-accent-blue'
+                }`}
+                aria-label="Toggle theme"
+              >
+                {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              </button>
             </div>
-
-            <button
-              onClick={toggleTheme}
-              className={`p-2 rounded-lg transition-all ${
-                theme === 'dark'
-                  ? 'bg-dark-lighter hover:bg-gray-700 text-electric-blue'
-                  : 'bg-gray-100 hover:bg-gray-200 text-accent-blue'
-              }`}
-              aria-label="Toggle theme"
-            >
-              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </button>
           </div>
         </div>
       </div>
@@ -268,18 +269,81 @@ const AIToolsShowcase = () => {
                   type="text"
                   placeholder="Search AI tools..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setShowDropdown(e.target.value.length > 0);
+                  }}
+                  onFocus={() => searchQuery.length > 0 && setShowDropdown(true)}
+                  onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
                   className={`w-full pl-12 pr-4 py-3 rounded-lg border-2 focus:outline-none transition-all ${
                     theme === 'dark'
                       ? 'bg-dark-lighter border-gray-700 text-white focus:border-electric-blue'
                       : 'bg-white border-gray-300 text-gray-900 focus:border-accent-blue'
                   }`}
                 />
+                
+                {showDropdown && searchQuery.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className={`absolute top-full mt-2 w-full rounded-lg border-2 max-h-96 overflow-y-auto z-50 shadow-2xl ${
+                      theme === 'dark'
+                        ? 'bg-dark-card border-gray-700'
+                        : 'bg-white border-gray-300'
+                    }`}
+                  >
+                    {filteredTools.length > 0 ? (
+                      <div className="p-2">
+                        {filteredTools.map((tool) => {
+                          const Icon = tool.icon;
+                          return (
+                            <button
+                              key={tool.id}
+                              onClick={() => {
+                                handleToolClick(tool);
+                                setShowDropdown(false);
+                              }}
+                              className={`w-full p-3 rounded-lg flex items-center gap-3 transition-all mb-1 ${
+                                theme === 'dark'
+                                  ? 'hover:bg-dark-lighter text-white'
+                                  : 'hover:bg-gray-100 text-gray-900'
+                              }`}
+                            >
+                              <div className={`p-2 rounded-lg bg-gradient-to-br ${tool.color} flex-shrink-0`}>
+                                <Icon className="w-4 h-4 text-white" />
+                              </div>
+                              <div className="flex-1 text-left">
+                                <div className="font-semibold text-sm">{tool.name}</div>
+                                <div className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                                  {tool.category}
+                                </div>
+                              </div>
+                              <Sparkles className={`w-4 h-4 flex-shrink-0 ${
+                                theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
+                              }`} />
+                            </button>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <div className={`p-6 text-center ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                        <Search className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                        <p className="text-sm">No tools found matching "{searchQuery}"</p>
+                      </div>
+                    )}
+                  </motion.div>
+                )}
               </div>
 
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                onClick={() => {
+                  setSearchQuery('');
+                  setSelectedCategory('all');
+                  setShowDropdown(false);
+                }}
                 className={`px-8 py-3 rounded-lg font-semibold flex items-center gap-2 ${
                   theme === 'dark'
                     ? 'bg-electric-green text-black hover:bg-electric-blue'

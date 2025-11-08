@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
 import { AIGlowBackground, AIPulseButton } from './animations';
+import { FaFacebookF, FaTwitter, FaLinkedinIn, FaInstagram, FaGithub } from 'react-icons/fa';
 
 const slideOneImageUrl = '/nanoflows-image.png';
 
@@ -188,6 +189,44 @@ const Hero = () => {
         }`}
         aria-hidden="true"
       />
+
+      <motion.div
+        initial={{ opacity: 0, x: -50 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8, delay: 0.5 }}
+        className="fixed left-0 top-1/2 -translate-y-1/2 z-20 hidden md:block"
+      >
+        <div className={`flex flex-col gap-4 p-4 rounded-r-2xl backdrop-blur-sm ${
+          theme === 'dark' 
+            ? 'bg-dark-card/80 border-r-2 border-electric-blue/30' 
+            : 'bg-white/80 border-r-2 border-accent-blue/30'
+        }`}>
+          {[
+            { Icon: FaFacebookF, href: 'https://facebook.com', label: 'Facebook' },
+            { Icon: FaTwitter, href: 'https://twitter.com', label: 'Twitter' },
+            { Icon: FaLinkedinIn, href: 'https://linkedin.com', label: 'LinkedIn' },
+            { Icon: FaInstagram, href: 'https://instagram.com', label: 'Instagram' },
+            { Icon: FaGithub, href: 'https://github.com', label: 'GitHub' }
+          ].map(({ Icon, href, label }) => (
+            <motion.a
+              key={label}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.2, rotate: 5 }}
+              whileTap={{ scale: 0.9 }}
+              className={`p-3 rounded-lg transition-all ${
+                theme === 'dark'
+                  ? 'bg-dark-lighter text-electric-blue hover:bg-electric-blue hover:text-black'
+                  : 'bg-gray-100 text-accent-blue hover:bg-accent-blue hover:text-white'
+              }`}
+              aria-label={label}
+            >
+              <Icon className="w-5 h-5" />
+            </motion.a>
+          ))}
+        </div>
+      </motion.div>
 
       <div className="container mx-auto px-4 sm:px-6 py-20 sm:py-24 md:py-32 relative z-10 max-w-6xl text-center">
         <motion.div
