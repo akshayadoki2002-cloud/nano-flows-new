@@ -2,7 +2,20 @@
 
 ## Overview
 
-Nano Flows is a modern, AI-focused marketing website built with React, TypeScript, and Vite. The application showcases AI-powered services through an interactive, visually striking interface with dynamic animations, dark/light theme switching, and comprehensive service presentations. The platform features a main landing page with multiple sections (Hero, About, Services, Features, Case Studies, Contact) and an Education Dashboard accessible via routing.
+Nano Flows is a modern, AI-focused marketing website built with React, TypeScript, and Vite. The application showcases AI-powered services through an interactive, visually striking interface with dynamic animations, dark/light theme switching, and comprehensive service presentations. The platform features a main landing page with multiple sections (Hero, About, Services, Features, Case Studies, Contact), an Education Dashboard (Udemy-style learning platform), and an AI Tools Showcase page with 12 free AI tools.
+
+## Recent Changes (November 2025)
+
+### Social Media Integration
+- Added professional social media sidebar to Hero section with Facebook, Twitter, LinkedIn, Instagram, and GitHub icons
+- Sidebar features smooth animations, theme-aware styling, and responsive design (hidden on mobile, visible on desktop)
+- Icons include hover effects with scale and rotation animations
+
+### AI Tools Page Enhancements
+- Repositioned Back button to right side beside theme toggle for improved navigation hierarchy
+- Implemented live search dropdown with filtered results showing matching tools as user types
+- Search dropdown displays tool icons, names, and categories with smooth animations
+- Added "Explore All Tools" button functionality to clear search filters
 
 ## User Preferences
 
