@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import {
@@ -11,9 +11,12 @@ import {
   Award,
   Library,
   Grid3x3,
-  List
+  List,
+  Moon,
+  Sun,
+  Play
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface Course {
   id: number;
@@ -31,12 +34,14 @@ interface Course {
 }
 
 const EducationDashboard = () => {
-  const { theme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [activeView, setActiveView] = useState<'grid' | 'list'>('grid');
   const [activeTab, setActiveTab] = useState('my-learning');
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState('all courses');
   const [searchQuery, setSearchQuery] = useState('');
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
 
   const categories = [
     'All Courses',
@@ -129,12 +134,71 @@ const EducationDashboard = () => {
       thumbnail: '/nanoflows-image.png',
       category: 'Design',
       level: 'Beginner'
+    },
+    {
+      id: 7,
+      title: 'Digital Marketing Mastery 2025',
+      instructor: 'Rachel Green',
+      rating: 4.6,
+      students: 55000,
+      duration: '32 hours',
+      price: '$69.99',
+      thumbnail: '/nanoflows-image.png',
+      category: 'Marketing',
+      level: 'Beginner'
+    },
+    {
+      id: 8,
+      title: 'Business Analytics & Intelligence',
+      instructor: 'David Wilson',
+      rating: 4.8,
+      students: 42000,
+      duration: '38 hours',
+      price: '$84.99',
+      thumbnail: '/nanoflows-image.png',
+      category: 'Business',
+      level: 'Intermediate'
     }
   ];
+
+  const allCourses = [...myCourses, ...featuredCourses];
+
+  const filteredCourses = allCourses.filter(course =>
+    course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    course.instructor.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    course.category.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const displayedCourses = selectedCategory === 'all courses'
+    ? featuredCourses
+    : featuredCourses.filter(course => 
+        course.category.toLowerCase() === selectedCategory.toLowerCase()
+      );
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowSearchDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleCourseClick = (course: Course) => {
+    alert(`Opening: ${course.title}\n\nInstructor: ${course.instructor}\nPrice: ${course.price}\nDuration: ${course.duration}\n\nThis would navigate to the course details page.`);
+  };
+
+  const handleEnrollClick = (course: Course, e: React.MouseEvent) => {
+    e.stopPropagation();
+    alert(`Enrolling in: ${course.title}\n\nPrice: ${course.price}\n\nThis would open the enrollment/payment page.`);
+  };
 
   const CourseCard = ({ course, showProgress = false }: { course: Course; showProgress?: boolean }) => (
     <motion.div
       whileHover={{ y: -5 }}
+      onClick={() => handleCourseClick(course)}
       className={`rounded-lg overflow-hidden border cursor-pointer transition-all ${
         theme === 'dark'
           ? 'bg-dark-lighter border-gray-700 hover:border-electric-blue'
@@ -152,6 +216,22 @@ const EducationDashboard = () => {
         }`}>
           {course.level}
         </div>
+        {showProgress && (
+          <div className="absolute bottom-2 left-2 right-2">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                alert(`Continuing: ${course.title}\n\nYou're ${course.progress}% complete!`);
+              }}
+              className={`w-full py-2 px-4 rounded font-semibold flex items-center justify-center gap-2 ${
+                theme === 'dark' ? 'bg-electric-blue text-black' : 'bg-accent-red text-white'
+              }`}
+            >
+              <Play className="w-4 h-4" />
+              Continue Learning
+            </button>
+          </div>
+        )}
       </div>
       
       <div className="p-4">
@@ -212,6 +292,19 @@ const EducationDashboard = () => {
           </div>
         )}
 
+        {!showProgress && (
+          <button
+            onClick={(e) => handleEnrollClick(course, e)}
+            className={`w-full mt-2 py-2 px-4 rounded font-semibold transition-all ${
+              theme === 'dark'
+                ? 'bg-electric-green text-black hover:bg-electric-blue'
+                : 'bg-accent-red text-white hover:bg-accent-blue'
+            }`}
+          >
+            Enroll Now
+          </button>
+        )}
+
         {showProgress && course.lastUpdated && (
           <p className={`text-xs mt-2 ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>
             Last accessed: {course.lastUpdated}
@@ -224,6 +317,7 @@ const EducationDashboard = () => {
   const ListCourseCard = ({ course, showProgress = false }: { course: Course; showProgress?: boolean }) => (
     <motion.div
       whileHover={{ x: 5 }}
+      onClick={() => handleCourseClick(course)}
       className={`rounded-lg overflow-hidden border cursor-pointer transition-all flex gap-4 p-4 ${
         theme === 'dark'
           ? 'bg-dark-lighter border-gray-700 hover:border-electric-blue'
@@ -277,7 +371,7 @@ const EducationDashboard = () => {
           </span>
         </div>
 
-        {showProgress && course.progress !== undefined && (
+        {showProgress && course.progress !== undefined ? (
           <div className="flex items-center gap-3">
             <div className="flex-1">
               <div className={`w-full h-2 rounded-full overflow-hidden ${
@@ -295,15 +389,30 @@ const EducationDashboard = () => {
               {course.progress}%
             </span>
           </div>
+        ) : (
+          <button
+            onClick={(e) => handleEnrollClick(course, e)}
+            className={`px-6 py-2 rounded font-semibold transition-all ${
+              theme === 'dark'
+                ? 'bg-electric-green text-black hover:bg-electric-blue'
+                : 'bg-accent-red text-white hover:bg-accent-blue'
+            }`}
+          >
+            Enroll Now
+          </button>
         )}
       </div>
     </motion.div>
   );
 
-  const StatCard = ({ icon: Icon, label, value, color }: any) => (
-    <div className={`rounded-lg p-6 ${
-      theme === 'dark' ? 'bg-dark-lighter border border-gray-700' : 'bg-white border border-gray-200'
-    }`}>
+  const StatCard = ({ icon: Icon, label, value, color, onClick }: any) => (
+    <motion.div
+      whileHover={{ scale: 1.05 }}
+      onClick={onClick}
+      className={`rounded-lg p-6 cursor-pointer transition-all ${
+        theme === 'dark' ? 'bg-dark-lighter border border-gray-700 hover:border-electric-blue' : 'bg-white border border-gray-200 hover:shadow-lg'
+      }`}
+    >
       <div className="flex items-center justify-between">
         <div>
           <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -317,7 +426,7 @@ const EducationDashboard = () => {
           <Icon className="w-6 h-6 text-white" />
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 
   return (
@@ -359,7 +468,7 @@ const EducationDashboard = () => {
             </div>
 
             <div className="flex items-center gap-4">
-              <div className="relative hidden lg:block">
+              <div className="relative hidden lg:block" ref={searchRef}>
                 <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 ${
                   theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
                 }`} />
@@ -367,15 +476,89 @@ const EducationDashboard = () => {
                   type="text"
                   placeholder="Search courses..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setShowSearchDropdown(e.target.value.length > 0);
+                  }}
+                  onFocus={() => searchQuery.length > 0 && setShowSearchDropdown(true)}
                   className={`pl-10 pr-4 py-2 rounded-lg border focus:outline-none focus:ring-2 w-80 ${
                     theme === 'dark'
                       ? 'bg-dark-lighter border-gray-700 text-white focus:ring-electric-blue'
                       : 'bg-white border-gray-300 text-gray-900 focus:ring-accent-blue'
                   }`}
                 />
+                
+                <AnimatePresence>
+                  {showSearchDropdown && filteredCourses.length > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className={`absolute top-full mt-2 w-full rounded-lg border shadow-lg max-h-96 overflow-y-auto z-50 ${
+                        theme === 'dark'
+                          ? 'bg-dark-card border-gray-700'
+                          : 'bg-white border-gray-200'
+                      }`}
+                    >
+                      {filteredCourses.slice(0, 5).map((course) => (
+                        <div
+                          key={course.id}
+                          onClick={() => {
+                            handleCourseClick(course);
+                            setShowSearchDropdown(false);
+                            setSearchQuery('');
+                          }}
+                          className={`p-3 cursor-pointer flex items-start gap-3 border-b last:border-b-0 transition-colors ${
+                            theme === 'dark'
+                              ? 'border-gray-700 hover:bg-dark-lighter'
+                              : 'border-gray-100 hover:bg-gray-50'
+                          }`}
+                        >
+                          <img
+                            src={course.thumbnail}
+                            alt={course.title}
+                            className="w-16 h-12 object-cover rounded flex-shrink-0"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <h4 className={`font-semibold text-sm line-clamp-1 ${
+                              theme === 'dark' ? 'text-white' : 'text-gray-900'
+                            }`}>
+                              {course.title}
+                            </h4>
+                            <p className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                              {course.instructor}
+                            </p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <div className="flex items-center gap-1">
+                                <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                                <span className="text-xs">{course.rating}</span>
+                              </div>
+                              <span className={`text-xs font-semibold ${
+                                theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
+                              }`}>
+                                {course.price}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
               
+              <button
+                onClick={toggleTheme}
+                className={`p-2 rounded-lg transition-all ${
+                  theme === 'dark'
+                    ? 'bg-dark-lighter hover:bg-gray-700 text-electric-blue'
+                    : 'bg-gray-100 hover:bg-gray-200 text-accent-blue'
+                }`}
+                aria-label="Toggle theme"
+              >
+                {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              </button>
+
               <button
                 onClick={() => navigate('/')}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all ${
@@ -410,24 +593,28 @@ const EducationDashboard = () => {
                 label="Courses Enrolled"
                 value="3"
                 color="bg-blue-500"
+                onClick={() => alert('Viewing all enrolled courses')}
               />
               <StatCard
                 icon={Clock}
                 label="Learning Hours"
                 value="127"
                 color="bg-green-500"
+                onClick={() => alert('Total learning time across all courses')}
               />
               <StatCard
                 icon={Award}
                 label="Certificates"
                 value="2"
                 color="bg-purple-500"
+                onClick={() => alert('View your earned certificates')}
               />
               <StatCard
                 icon={TrendingUp}
                 label="Average Progress"
                 value="45%"
                 color="bg-orange-500"
+                onClick={() => alert('Your average progress across all courses')}
               />
             </div>
 
@@ -439,20 +626,20 @@ const EducationDashboard = () => {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setActiveView('grid')}
-                    className={`p-2 rounded ${
+                    className={`p-2 rounded transition-all ${
                       activeView === 'grid'
                         ? theme === 'dark' ? 'bg-electric-blue text-black' : 'bg-accent-red text-white'
-                        : theme === 'dark' ? 'bg-dark-lighter text-gray-400' : 'bg-gray-200 text-gray-600'
+                        : theme === 'dark' ? 'bg-dark-lighter text-gray-400 hover:bg-gray-700' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                     }`}
                   >
                     <Grid3x3 className="w-5 h-5" />
                   </button>
                   <button
                     onClick={() => setActiveView('list')}
-                    className={`p-2 rounded ${
+                    className={`p-2 rounded transition-all ${
                       activeView === 'list'
                         ? theme === 'dark' ? 'bg-electric-blue text-black' : 'bg-accent-red text-white'
-                        : theme === 'dark' ? 'bg-dark-lighter text-gray-400' : 'bg-gray-200 text-gray-600'
+                        : theme === 'dark' ? 'bg-dark-lighter text-gray-400 hover:bg-gray-700' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                     }`}
                   >
                     <List className="w-5 h-5" />
@@ -510,10 +697,10 @@ const EducationDashboard = () => {
 
             <div>
               <h3 className={`text-2xl font-bold mb-6 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                Featured Courses
+                {selectedCategory === 'all courses' ? 'Featured Courses' : selectedCategory}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {featuredCourses.map((course) => (
+                {displayedCourses.map((course) => (
                   <CourseCard key={course.id} course={course} />
                 ))}
               </div>
@@ -533,11 +720,17 @@ const EducationDashboard = () => {
               <p className={`text-lg mb-6 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
                 Join thousands of students and unlock your potential
               </p>
-              <button className={`px-8 py-3 rounded-lg font-semibold transition-all ${
-                theme === 'dark'
-                  ? 'bg-electric-green text-black hover:bg-electric-blue'
-                  : 'bg-accent-red text-white hover:bg-accent-blue'
-              }`}>
+              <button
+                onClick={() => {
+                  setActiveTab('browse');
+                  setSelectedCategory('all courses');
+                }}
+                className={`px-8 py-3 rounded-lg font-semibold transition-all ${
+                  theme === 'dark'
+                    ? 'bg-electric-green text-black hover:bg-electric-blue'
+                    : 'bg-accent-red text-white hover:bg-accent-blue'
+                }`}
+              >
                 Browse All Courses
               </button>
             </div>
