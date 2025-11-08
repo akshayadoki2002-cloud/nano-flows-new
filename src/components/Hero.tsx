@@ -22,20 +22,20 @@ const Hero = () => {
       highlight: 'The Future',
       subtitle:
         'Experience seamless innovation with Nano Flows. We deliver cutting-edge AI-powered solutions that transform your digital presence through dynamic personalization and continuous evolution.',
-      buttonText: 'Get Started',
+      buttonText: 'Request Demo',
     },
     {
       title: 'Empower Your',
       highlight: 'Business',
       subtitle: 'Gain the confidence to evolve intelligently.',
-      buttonText: 'Learn More',
+      buttonText: 'Discover Solutions',
     },
     {
       title: 'Join Our',
       highlight: 'Community',
       subtitle:
         'Collaborate and innovate with experts worldwide. Be part of the AI revolution and accelerate your projects with shared knowledge and resources.',
-      buttonText: 'Explore',
+      buttonText: 'Get Involved',
     },
   ], []);
 
@@ -329,7 +329,7 @@ const Hero = () => {
             size="lg"
             className="w-full sm:w-auto"
           >
-            Explore Solutions
+            View Our Services
           </AIPulseButton>
         </motion.div>
 
