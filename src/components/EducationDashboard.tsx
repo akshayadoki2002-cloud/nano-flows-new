@@ -181,7 +181,7 @@ const Card: React.FC<{
           {title}
         </h3>
         <p
-          className={`font-exo mt-1 text-xs sm:text-sm md:text-base text-justify ${cfg.textSecondary}`}
+          className={`font-exo mt-1 text-xs sm:text-sm md:text-base text-left ${cfg.textSecondary}`}
           style={{ lineHeight: "1.4em" }}
         >
           {subtitle}
